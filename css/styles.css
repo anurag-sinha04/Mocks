@@ -1,0 +1,83 @@
+/* ==========================================================================
+   CLAT MOCK-1 — Custom Stylesheet
+   Stored at: clat-mock-1/css/styles.css
+   ========================================================================== */
+
+:root {
+  --nlu-950: #091a33;
+  --nlu-900: #0f294d;
+  --nlu-800: #16396b;
+  --nlu-700: #1e3a8a;
+  --nlu-accent: #fbbf24;
+  --scroll-track: #f1f5f9;
+  --scroll-thumb: #cbd5e1;
+  --scroll-thumb-hover: #94a3b8;
+}
+
+/* Base typography & smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Mirror live webcam preview so candidate alignment feels natural */
+.camera-mirrored {
+  transform: scaleX(-1);
+}
+
+/* Modal backdrop blur */
+.modal-backdrop {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Clean custom scrollbars for CBT Passage, Question, and Palette panes */
+.custom-scroll::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: var(--scroll-track);
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--scroll-thumb);
+  border-radius: 9999px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scroll-thumb-hover);
+}
+
+/* Firefox scrollbar fallback */
+.custom-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+/* Subtle entry animation for toast alerts */
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.toast-enter {
+  animation: toastSlideIn 0.2s ease-out forwards;
+}
+
+/* Highlight active option nicely */
+.option-btn:focus-visible,
+.palette-q-btn:focus-visible {
+  outline: 2px solid var(--nlu-700);
+  outline-offset: 2px;
+}

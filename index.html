@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLAT MOCK-1 | Common Law Admission Test CBT Portal</title>
+
+  <!-- Google Font: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          colors: {
+            nlu: {
+              950: '#091a33',
+              900: '#0f294d',
+              800: '#16396b',
+              700: '#1e3a8a',
+              600: '#254ea8',
+              50: '#f0f5fc',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="bg-slate-100 text-slate-900 font-sans antialiased min-h-screen flex flex-col selection:bg-nlu-700 selection:text-white">
+
+  <!-- ==================== TOAST NOTIFICATION CONTAINER ==================== -->
+  <div id="toast-container" class="fixed top-4 right-4 z-[100] flex flex-col gap-2 max-w-sm w-[calc(100vw-2rem)] pointer-events-none"></div>
+
+  <!-- ==================== SCREEN 1: REGISTRATION & LIVE PHOTO VERIFICATION ==================== -->
+  <div id="screen-registration" class="flex-1 flex flex-col">
+    <header class="bg-nlu-900 text-white border-b-4 border-amber-400 shadow-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3.5">
+          <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center shrink-0 shadow-inner">
+            <svg class="w-7 h-7 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 3v18"></path>
+              <path d="M5 7h14"></path>
+              <path d="M7 7l-3 7a3 3 0 0 0 6 0L7 7z"></path>
+              <path d="M17 7l-3 7a3 3 0 0 0 6 0l-3-7z"></path>
+              <path d="M8 21h8"></path>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2.5 flex-wrap">
+              <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-white">CLAT MOCK-1</h1>
+              <span class="px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider bg-amber-400/20 text-amber-300 border border-amber-300/30 rounded-md">Official CBT Format</span>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-200 mt-0.5">Common Law Admission Test — Full-Length Mock Portal (120 Questions | 120 Minutes | +1 / -0.25 Marking)</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 ml-auto">
+          <div id="firebase-status-badge" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/10 border border-white/15 text-xs font-medium text-slate-200">
+            <span id="firebase-status-dot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+            <span id="firebase-status-text">Connecting...</span>
+          </div>
+
+          <button
+            id="btn-open-scoreboard"
+            type="button"
+            class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-nlu-900 hover:bg-amber-50 font-semibold text-sm shadow-sm transition-all active:scale-[0.98] cursor-pointer"
+          >
+            <svg class="w-4 h-4 text-nlu-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 21h8"></path>
+              <path d="M12 17v4"></path>
+              <path d="M7 4h10"></path>
+              <path d="M17 4v5a5 5 0 0 1-10 0V4"></path>
+              <path d="M5 4h2"></path>
+              <path d="M17 4h2"></path>
+            </svg>
+            <span>Firebase Scoreboard</span>
+            <span id="scoreboard-count-badge" class="px-1.5 py-0.5 text-xs font-bold bg-nlu-900 text-white rounded-md min-w-[22px] text-center">0</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div class="mb-6 bg-nlu-50 border border-blue-200 rounded-xl p-4 flex items-start gap-3">
+        <svg class="w-5 h-5 text-nlu-700 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 16v-4"></path>
+          <path d="M12 8h.01"></path>
+        </svg>
+        <div class="text-xs sm:text-sm text-nlu-900 leading-relaxed">
+          <span class="font-bold">Candidate Verification Notice:</span> Enter your exact details and capture a live photograph on screen before starting <span class="font-semibold">CLAT MOCK-1</span>. Your attendance, live photo, and final score are synced in real time to the examination scoreboard.
+        </div>
+      </div>
+
+      <form id="registration-form" novalidate class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="bg-slate-50 border-b border-slate-200 px-5 sm:px-8 py-4 flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-nlu-900">Candidate Registration &amp; Live Photo Verification</h2>
+            <p class="text-xs text-slate-500">All fields and live photo verification are mandatory to unlock CLAT MOCK-1</p>
+          </div>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-nlu-900 text-white">STEP 1 OF 3</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
+          <!-- LEFT COLUMN -->
+          <div class="lg:col-span-7 p-5 sm:p-8 space-y-6">
+            <div>
+              <h3 class="text-sm font-bold uppercase tracking-wider text-nlu-800 mb-4 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-md bg-nlu-900 text-white text-xs flex items-center justify-center font-bold">1</span>
+                Candidate Information
+              </h3>
+
+              <div class="space-y-4">
+                <div>
+                  <label for="input-name" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                    Full Name <span class="text-red-600">*</span>
+                  </label>
+                  <input
+                    id="input-name"
+                    name="name"
+                    type="text"
+                    autocomplete="name"
+                    required
+                    placeholder="Enter your full name as per admit card"
+                    class="w-full px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-nlu-700 focus:border-nlu-700 transition"
+                  />
+                  <p id="error-name" class="hidden mt-1 text-xs font-medium text-red-600"></p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label for="input-mobile" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                      Mobile Number (10 Digits) <span class="text-red-600">*</span>
+                    </label>
+                    <div class="relative">
+                      <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-semibold text-slate-400">+91</span>
+                      <input
+                        id="input-mobile"
+                        name="mobile"
+                        type="tel"
+                        inputmode="numeric"
+                        maxlength="10"
+                        required
+                        placeholder="9876543210"
+                        class="w-full pl-12 pr-4 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-nlu-700 focus:border-nlu-700 transition"
+                      />
+                    </div>
+                    <p id="error-mobile" class="hidden mt-1 text-xs font-medium text-red-600"></p>
+                  </div>
+
+                  <div>
+                    <label for="input-email" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                      Email Address <span class="text-red-600">*</span>
+                    </label>
+                    <input
+                      id="input-email"
+                      name="email"
+                      type="email"
+                      autocomplete="email"
+                      required
+                      placeholder="candidate@example.com"
+                      class="w-full px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-nlu-700 focus:border-nlu-700 transition"
+                    />
+                    <p id="error-email" class="hidden mt-1 text-xs font-medium text-red-600"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-200">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-nlu-800">CLAT MOCK-1 Blueprint (Exact 120 Qs)</h3>
+                <span class="text-xs font-semibold text-slate-500">120 Mins &bull; +1 / -0.25</span>
+              </div>
+              <div class="overflow-x-auto rounded-xl border border-slate-200">
+                <table class="w-full text-left text-xs sm:text-sm">
+                  <thead class="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
+                    <tr>
+                      <th class="px-3.5 py-2.5">Section</th>
+                      <th class="px-3.5 py-2.5 text-center">Q. Range</th>
+                      <th class="px-3.5 py-2.5 text-right">Questions</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 text-slate-700">
+                    <tr class="hover:bg-slate-50/70">
+                      <td class="px-3.5 py-2 font-medium">1. English Language</td>
+                      <td class="px-3.5 py-2 text-center text-slate-500">Q1 – Q24</td>
+                      <td class="px-3.5 py-2 text-right font-bold text-nlu-900">24</td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/70">
+                      <td class="px-3.5 py-2 font-medium">2. Current Affairs &amp; GK</td>
+                      <td class="px-3.5 py-2 text-center text-slate-500">Q25 – Q52</td>
+                      <td class="px-3.5 py-2 text-right font-bold text-nlu-900">28</td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/70">
+                      <td class="px-3.5 py-2 font-medium">3. Legal Reasoning</td>
+                      <td class="px-3.5 py-2 text-center text-slate-500">Q53 – Q84</td>
+                      <td class="px-3.5 py-2 text-right font-bold text-nlu-900">32</td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/70">
+                      <td class="px-3.5 py-2 font-medium">4. Logical Reasoning</td>
+                      <td class="px-3.5 py-2 text-center text-slate-500">Q85 – Q108</td>
+                      <td class="px-3.5 py-2 text-right font-bold text-nlu-900">24</td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/70">
+                      <td class="px-3.5 py-2 font-medium">5. Quantitative Techniques</td>
+                      <td class="px-3.5 py-2 text-center text-slate-500">Q109 – Q120</td>
+                      <td class="px-3.5 py-2 text-right font-bold text-nlu-900">12</td>
+                    </tr>
+                  </tbody>
+                  <tfoot class="bg-nlu-50 font-bold text-nlu-900 border-t border-slate-200">
+                    <tr>
+                      <td class="px-3.5 py-2.5">Total Official Format</td>
+                      <td class="px-3.5 py-2.5 text-center text-xs font-semibold text-nlu-700">120 Marks</td>
+                      <td class="px-3.5 py-2.5 text-right">120 Qs</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: LIVE WEBCAM CAPTURE -->
+          <div class="lg:col-span-5 p-5 sm:p-8 bg-slate-50/60 flex flex-col justify-between">
+            <div>
+              <h3 class="text-sm font-bold uppercase tracking-wider text-nlu-800 mb-4 flex items-center gap-2">
+                <span class="w-6 h-6 rounded-md bg-nlu-900 text-white text-xs flex items-center justify-center font-bold">2</span>
+                Live On-Screen Photo Click <span class="text-red-600">*</span>
+              </h3>
+
+              <div class="relative w-full max-w-[300px] mx-auto aspect-square rounded-2xl overflow-hidden bg-slate-900 border-2 border-slate-300 shadow-inner flex items-center justify-center">
+                <div id="camera-placeholder" class="text-center p-6 text-slate-300">
+                  <div class="w-16 h-16 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-8 h-8 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                      <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                  </div>
+                  <p class="text-sm font-semibold text-white">Camera Ready</p>
+                  <p class="text-xs text-slate-400 mt-1">Click "Start Camera" and align your face inside the frame</p>
+                </div>
+
+                <video id="camera-video" autoplay playsinline muted class="hidden w-full h-full object-cover camera-mirrored"></video>
+
+                <div id="camera-guide-overlay" class="hidden absolute inset-0 pointer-events-none flex items-center justify-center">
+                  <svg class="w-full h-full" viewBox="0 0 240 240" preserveAspectRatio="none">
+                    <defs>
+                      <mask id="face-oval-mask">
+                        <rect width="240" height="240" fill="white" />
+                        <ellipse cx="120" cy="112" rx="68" ry="84" fill="black" />
+                      </mask>
+                    </defs>
+                    <rect width="240" height="240" fill="rgba(9, 26, 51, 0.42)" mask="url(#face-oval-mask)" />
+                    <ellipse cx="120" cy="112" rx="68" ry="84" fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="6 4" />
+                  </svg>
+                  <span class="absolute bottom-3 px-2.5 py-1 rounded-full bg-black/60 text-amber-300 text-[11px] font-semibold tracking-wide">
+                    Align face within oval
+                  </span>
+                </div>
+
+                <img id="captured-photo-preview" src="" alt="Captured candidate photograph" class="hidden w-full h-full object-cover" />
+
+                <div id="photo-verified-overlay" class="hidden absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/55 to-transparent p-3 text-white">
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500 text-white text-[11px] font-bold shadow">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                      Photo Verified
+                    </span>
+                    <span id="photo-timestamp-label" class="text-[10px] font-mono text-slate-200"></span>
+                  </div>
+                </div>
+              </div>
+
+              <canvas id="photo-capture-canvas" width="180" height="180" class="hidden"></canvas>
+
+              <div id="camera-error-box" class="hidden mt-3 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs leading-relaxed"></div>
+              <p id="error-photo" class="hidden mt-2 text-center text-xs font-semibold text-red-600"></p>
+
+              <div class="mt-4 max-w-[300px] mx-auto flex flex-wrap items-center justify-center gap-2.5">
+                <button
+                  id="btn-start-camera"
+                  type="button"
+                  class="flex-1 min-w-[130px] inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-nlu-900 hover:bg-nlu-800 text-white font-semibold text-sm shadow-sm transition cursor-pointer"
+                >
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M23 7l-7 5 7 5V7z"></path>
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                  </svg>
+                  Start Camera
+                </button>
+
+                <button
+                  id="btn-click-photo"
+                  type="button"
+                  class="hidden flex-1 min-w-[130px] inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-sm transition cursor-pointer"
+                >
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
+                  </svg>
+                  Click Photo
+                </button>
+
+                <button
+                  id="btn-retake-photo"
+                  type="button"
+                  class="hidden flex-1 min-w-[130px] inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-700 hover:bg-slate-800 text-white font-semibold text-sm shadow-sm transition cursor-pointer"
+                >
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="1 4 1 10 7 10"></polyline>
+                    <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                  </svg>
+                  Retake Photo
+                </button>
+              </div>
+
+              <div class="mt-3 text-center">
+                <input id="input-photo-upload" type="file" accept="image/*" class="hidden" />
+                <button
+                  id="btn-upload-fallback"
+                  type="button"
+                  class="text-xs font-medium text-slate-500 hover:text-nlu-700 underline underline-offset-2 transition cursor-pointer py-1 px-2"
+                >
+                  Camera unavailable? Upload Photo instead
+                </button>
+              </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-200 text-[11px] text-slate-500 flex items-center justify-between">
+              <span>Format: Compressed JPEG (180&times;180px)</span>
+              <span id="photo-size-indicator" class="font-mono font-semibold text-slate-600">No photo yet</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-50 border-t border-slate-200 px-5 sm:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p class="text-xs text-slate-500 text-center sm:text-left">
+            By registering, your details &amp; live photo will be recorded for <span class="font-semibold text-slate-700">CLAT MOCK-1</span> score evaluation.
+          </p>
+          <button
+            id="btn-register-submit"
+            type="submit"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl bg-nlu-900 hover:bg-nlu-800 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-sm sm:text-base shadow-md transition-all active:scale-[0.99] cursor-pointer"
+          >
+            <span id="btn-register-text">Register &amp; Continue to CLAT MOCK-1</span>
+            <svg id="btn-register-arrow" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+            <svg id="btn-register-spinner" class="hidden w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </main>
+  </div>
+
+  <!-- ==================== SCREEN 2: OFFICIAL CLAT INSTRUCTIONS ==================== -->
+  <div id="screen-instructions" class="hidden flex-1 flex flex-col">
+    <header class="bg-nlu-900 text-white border-b-4 border-amber-400 shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center shrink-0">
+            <svg class="w-6 h-6 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M12 3v18"></path>
+              <path d="M5 7h14"></path>
+              <path d="M7 7l-3 7a3 3 0 0 0 6 0L7 7z"></path>
+              <path d="M17 7l-3 7a3 3 0 0 0 6 0l-3-7z"></path>
+              <path d="M8 21h8"></path>
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-lg sm:text-xl font-extrabold tracking-tight">CLAT MOCK-1 — General Instructions</h1>
+            <p class="text-xs text-slate-300">Please read all instructions carefully before commencing the examination</p>
+          </div>
+        </div>
+        <span class="hidden sm:inline-block text-xs font-bold px-3 py-1.5 rounded-lg bg-white/15 border border-white/20">STEP 2 OF 3</span>
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="lg:col-span-8 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="bg-slate-50 border-b border-slate-200 px-6 py-4">
+            <h2 class="text-base sm:text-lg font-bold text-nlu-900">Important Examination Guidelines</h2>
+          </div>
+
+          <div class="p-6 space-y-6 text-sm text-slate-700 leading-relaxed">
+            <div>
+              <h3 class="font-bold text-nlu-900 mb-2.5 flex items-center gap-2">
+                <span class="w-5 h-5 rounded bg-blue-100 text-nlu-900 text-xs flex items-center justify-center font-bold">A</span>
+                Duration &amp; Marking Scheme
+              </h3>
+              <ul class="list-disc pl-5 space-y-2">
+                <li>Total duration of <strong>CLAT MOCK-1</strong> is <strong>120 minutes (2 Hours)</strong>. When the timer reaches zero, your exam will be automatically submitted.</li>
+                <li>The paper consists of <strong>120 Multiple Choice Questions (MCQs)</strong> across 5 sections: English Language (24), Current Affairs &amp; GK (28), Legal Reasoning (32), Logical Reasoning (24), and Quantitative Techniques (12).</li>
+                <li><strong>Correct Answer:</strong> <span class="font-bold text-emerald-700">+1.00 mark</span> for each correct answer.</li>
+                <li><strong>Incorrect Answer:</strong> <span class="font-bold text-red-600">-0.25 mark</span> negative marking for each wrong answer.</li>
+                <li><strong>Unattempted Question:</strong> <strong>0 marks</strong>.</li>
+              </ul>
+            </div>
+
+            <div class="pt-4 border-t border-slate-200">
+              <h3 class="font-bold text-nlu-900 mb-3 flex items-center gap-2">
+                <span class="w-5 h-5 rounded bg-blue-100 text-nlu-900 text-xs flex items-center justify-center font-bold">B</span>
+                Question Palette Status Legend
+              </h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <span class="w-9 h-9 rounded-lg bg-slate-100 border border-slate-300 text-slate-700 font-bold text-xs flex items-center justify-center shrink-0">1</span>
+                  <span class="text-xs sm:text-sm"><strong>Not Visited:</strong> Not opened yet.</span>
+                </div>
+                <div class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <span class="w-9 h-9 rounded-lg bg-red-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm">2</span>
+                  <span class="text-xs sm:text-sm"><strong>Not Answered:</strong> Visited, no option selected.</span>
+                </div>
+                <div class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <span class="w-9 h-9 rounded-lg bg-emerald-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm">3</span>
+                  <span class="text-xs sm:text-sm"><strong>Answered:</strong> Saved for evaluation.</span>
+                </div>
+                <div class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <span class="w-9 h-9 rounded-lg bg-purple-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm">4</span>
+                  <span class="text-xs sm:text-sm"><strong>Marked for Review:</strong> Flagged, no answer chosen.</span>
+                </div>
+                <div class="sm:col-span-2 flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <span class="relative w-9 h-9 rounded-lg bg-purple-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm">
+                    5
+                    <span class="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-white"></span>
+                  </span>
+                  <span class="text-xs sm:text-sm"><strong>Answered &amp; Marked for Review:</strong> Answer saved and flagged. <em>(Evaluated in final score.)</em></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-200">
+              <h3 class="font-bold text-nlu-900 mb-2.5 flex items-center gap-2">
+                <span class="w-5 h-5 rounded bg-blue-100 text-nlu-900 text-xs flex items-center justify-center font-bold">C</span>
+                Answering &amp; Navigation
+              </h3>
+              <ul class="list-disc pl-5 space-y-1.5">
+                <li>Use <strong>Section Tabs</strong> at the top to jump between all 5 sections freely.</li>
+                <li>Use <strong>A- / A+</strong> controls in the passage panel to adjust font size.</li>
+                <li>Use <strong>Save &amp; Next</strong>, <strong>Mark for Review &amp; Next</strong>, or <strong>Clear Response</strong> at any time.</li>
+              </ul>
+            </div>
+
+            <div class="pt-5 border-t border-slate-200 bg-nlu-50 -mx-6 -mb-6 p-6">
+              <label class="flex items-start gap-3 cursor-pointer select-none">
+                <input id="checkbox-instructions" type="checkbox" class="mt-1 w-5 h-5 rounded border-slate-300 text-nlu-900 focus:ring-nlu-700 cursor-pointer shrink-0" />
+                <span class="text-xs sm:text-sm font-medium text-nlu-950">
+                  I have read and understood all instructions carefully and agree to start the 120-minute timer for <strong>CLAT MOCK-1</strong>.
+                </span>
+              </label>
+
+              <div class="mt-5 flex flex-wrap items-center justify-between gap-3">
+                <button
+                  id="btn-back-to-reg"
+                  type="button"
+                  class="px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 font-semibold text-sm transition cursor-pointer"
+                >
+                  &larr; Edit Registration
+                </button>
+                <button
+                  id="btn-start-exam"
+                  type="button"
+                  disabled
+                  class="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 disabled:text-slate-500 disabled:cursor-not-allowed text-white font-bold text-sm sm:text-base shadow-md transition cursor-pointer"
+                >
+                  <span>Start Exam</span>
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="lg:col-span-4 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="bg-nlu-900 text-white px-5 py-3.5">
+            <h3 class="text-sm font-bold uppercase tracking-wider">Verified Candidate Profile</h3>
+          </div>
+          <div class="p-6 text-center">
+            <div class="relative w-32 h-32 mx-auto rounded-2xl overflow-hidden border-4 border-nlu-100 shadow-md bg-slate-100">
+              <img id="inst-candidate-photo" src="https://placehold.co/180x180/1e3a8a/ffffff?text=PHOTO" alt="Candidate live photo" class="w-full h-full object-cover" />
+              <span class="absolute bottom-1.5 right-1.5 w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center border-2 border-white shadow">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </span>
+            </div>
+            <h4 id="inst-candidate-name" class="mt-4 text-lg font-extrabold text-nlu-900">Candidate Name</h4>
+            <span class="inline-block mt-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold">Live Photo Verified</span>
+
+            <div class="mt-5 text-left space-y-2.5 bg-slate-50 rounded-xl p-4 border border-slate-200 text-xs sm:text-sm">
+              <div class="flex justify-between gap-2">
+                <span class="text-slate-500 font-medium">Mobile:</span>
+                <span id="inst-candidate-mobile" class="font-semibold text-slate-800">-</span>
+              </div>
+              <div class="flex justify-between gap-2">
+                <span class="text-slate-500 font-medium">Email:</span>
+                <span id="inst-candidate-email" class="font-semibold text-slate-800 truncate">-</span>
+              </div>
+              <div class="flex justify-between gap-2">
+                <span class="text-slate-500 font-medium">Mock Test:</span>
+                <span class="font-bold text-nlu-800">CLAT MOCK-1</span>
+              </div>
+              <div class="flex justify-between gap-2">
+                <span class="text-slate-500 font-medium">Questions:</span>
+                <span class="font-semibold text-slate-800">120 MCQs (120 Mins)</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <!-- ==================== SCREEN 3: 120-QUESTION CLAT CBT INTERFACE ==================== -->
+  <div id="screen-exam" class="hidden h-screen flex flex-col overflow-hidden bg-slate-100">
+    <header class="bg-nlu-900 text-white border-b-2 border-amber-400 px-3 sm:px-5 py-2.5 flex items-center justify-between gap-2 shrink-0 shadow-sm z-20">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-8 h-8 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 3v18"></path>
+            <path d="M5 7h14"></path>
+            <path d="M7 7l-3 7a3 3 0 0 0 6 0L7 7z"></path>
+            <path d="M17 7l-3 7a3 3 0 0 0 6 0l-3-7z"></path>
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <h1 class="text-sm sm:text-base font-extrabold tracking-tight truncate">CLAT MOCK-1</h1>
+          <p class="hidden sm:block text-[11px] text-slate-300 truncate">Consortium CBT Simulation &bull; 120 Qs</p>
+        </div>
+      </div>
+
+      <div id="exam-timer-box" class="flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-xl bg-nlu-950 border border-white/20 shadow-inner">
+        <svg class="w-4 h-4 text-amber-300 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <div class="text-center">
+          <span class="hidden md:inline text-[10px] uppercase tracking-wider text-slate-300 mr-1.5">Time Left</span>
+          <span id="exam-timer-display" class="font-mono font-extrabold text-sm sm:text-lg tracking-wider text-white">120:00</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <div class="hidden md:flex items-center gap-2 pr-2 border-r border-white/15">
+          <img id="exam-candidate-photo" src="https://placehold.co/80x80/1e3a8a/ffffff?text=U" alt="Candidate" class="w-8 h-8 rounded-full object-cover border-2 border-amber-300" />
+          <span id="exam-candidate-name" class="text-xs font-semibold text-white max-w-[130px] truncate">Candidate</span>
+        </div>
+
+        <button
+          id="btn-toggle-mobile-palette"
+          type="button"
+          class="lg:hidden inline-flex items-center gap-1.5 px-2.5 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-white text-xs font-semibold cursor-pointer"
+          aria-label="Open Question Palette"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          <span>Palette</span>
+        </button>
+
+        <button
+          id="btn-open-submit-modal"
+          type="button"
+          class="px-3 sm:px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs sm:text-sm shadow-sm transition cursor-pointer"
+        >
+          Submit Exam
+        </button>
+      </div>
+    </header>
+
+    <nav class="bg-white border-b border-slate-200 px-3 sm:px-5 py-2 flex items-center gap-2 overflow-x-auto shrink-0" aria-label="CLAT Exam Sections">
+      <div id="section-tabs-container" class="flex items-center gap-2 min-w-max"></div>
+    </nav>
+
+    <div class="flex-1 flex overflow-hidden relative">
+      <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
+        <!-- LEFT PANE: PASSAGE -->
+        <section class="w-full md:w-1/2 h-[42%] md:h-full bg-white border-b md:border-b-0 md:border-r border-slate-200 flex flex-col overflow-hidden">
+          <div class="bg-slate-50 border-b border-slate-200 px-4 py-2.5 flex items-center justify-between gap-2 shrink-0">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <span id="passage-badge" class="px-2 py-0.5 rounded bg-nlu-900 text-white text-[11px] font-bold">PASSAGE</span>
+                <h2 id="passage-title" class="text-xs sm:text-sm font-bold text-nlu-900 truncate">Loading passage...</h2>
+              </div>
+              <p id="passage-range" class="text-[11px] text-slate-500 mt-0.5">Questions 1–6</p>
+            </div>
+            <div class="flex items-center gap-1 shrink-0">
+              <button id="btn-font-dec" type="button" title="Decrease font size" class="px-2.5 py-1 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 cursor-pointer">A-</button>
+              <button id="btn-font-reset" type="button" title="Default font size" class="px-2 py-1 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-semibold text-slate-600 cursor-pointer">A</button>
+              <button id="btn-font-inc" type="button" title="Increase font size" class="px-2.5 py-1 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 cursor-pointer">A+</button>
+            </div>
+          </div>
+
+          <div id="passage-content-scroll" class="flex-1 overflow-y-auto p-4 sm:p-6 custom-scroll">
+            <div id="passage-placeholder-note" class="mb-4 px-3 py-2 rounded-lg bg-blue-50 border border-blue-200 text-blue-900 text-xs flex items-center justify-between gap-2">
+              <span><strong>Template Passage Ready:</strong> Update <code>js/questions.js</code> with your custom CLAT MOCK-1 paper.</span>
+            </div>
+            <article id="passage-body" class="text-slate-800 leading-relaxed space-y-4 text-[15px]"></article>
+          </div>
+        </section>
+
+        <!-- RIGHT PANE: QUESTION & OPTIONS -->
+        <section class="w-full md:w-1/2 h-[58%] md:h-full bg-slate-50 flex flex-col overflow-hidden">
+          <div class="bg-white border-b border-slate-200 px-4 sm:px-5 py-2.5 flex items-center justify-between gap-2 shrink-0">
+            <div class="flex items-center gap-2">
+              <span id="question-number-label" class="text-sm sm:text-base font-extrabold text-nlu-900">Question 1 of 120</span>
+              <span id="question-section-pill" class="hidden sm:inline-block px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200 text-[11px] font-semibold">English Language</span>
+            </div>
+            <div class="flex items-center gap-1.5 text-[11px] font-bold shrink-0">
+              <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">+1.00</span>
+              <span class="px-2 py-0.5 rounded bg-red-50 text-red-700 border border-red-200">-0.25</span>
+            </div>
+          </div>
+
+          <div class="flex-1 overflow-y-auto p-4 sm:p-6 custom-scroll">
+            <div id="question-text" class="text-sm sm:text-base font-semibold text-slate-900 leading-relaxed mb-5"></div>
+            <div id="options-container" class="space-y-3" role="radiogroup" aria-label="Answer Options"></div>
+          </div>
+
+          <div class="bg-white border-t border-slate-200 px-3 sm:px-5 py-3 flex flex-wrap items-center justify-between gap-2 shrink-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <button id="btn-mark-review" type="button" class="px-3 sm:px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold text-xs sm:text-sm shadow-sm transition cursor-pointer">
+                Mark for Review &amp; Next
+              </button>
+              <button id="btn-clear-response" type="button" class="px-3 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 font-semibold text-xs sm:text-sm transition cursor-pointer">
+                Clear Response
+              </button>
+            </div>
+
+            <div class="flex items-center gap-2 ml-auto">
+              <button id="btn-prev-question" type="button" class="px-3.5 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 disabled:opacity-40 text-slate-800 font-semibold text-xs sm:text-sm transition cursor-pointer">
+                &larr; Previous
+              </button>
+              <button id="btn-save-next" type="button" class="px-4 sm:px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow-sm transition cursor-pointer">
+                Save &amp; Next &rarr;
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- FAR-RIGHT QUESTION PALETTE -->
+      <div id="palette-backdrop" class="hidden fixed inset-0 bg-black/50 z-30 lg:hidden"></div>
+      <aside
+        id="question-palette-sidebar"
+        class="fixed lg:static inset-y-0 right-0 z-40 w-[300px] sm:w-[320px] lg:w-[290px] xl:w-[310px] bg-white border-l border-slate-200 flex flex-col transform translate-x-full lg:translate-x-0 transition-transform duration-200 shadow-xl lg:shadow-none shrink-0"
+      >
+        <div class="bg-slate-50 border-b border-slate-200 px-4 py-3 flex items-center justify-between shrink-0">
+          <div>
+            <h3 class="text-xs font-extrabold uppercase tracking-wider text-nlu-900">Question Palette</h3>
+            <p id="palette-scope-subtitle" class="text-[11px] text-slate-500">Active Section</p>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button id="btn-palette-scope-toggle" type="button" class="px-2.5 py-1 rounded-lg bg-nlu-900 hover:bg-nlu-800 text-white text-[11px] font-semibold transition cursor-pointer">
+              View All 120
+            </button>
+            <button id="btn-close-mobile-palette" type="button" class="lg:hidden p-1.5 rounded-lg text-slate-500 hover:bg-slate-200 cursor-pointer" aria-label="Close palette">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="p-3 border-b border-slate-200 bg-white grid grid-cols-2 gap-2 text-[11px] shrink-0">
+          <div class="flex items-center gap-2">
+            <span id="count-answered" class="w-6 h-6 rounded-md bg-emerald-600 text-white font-bold flex items-center justify-center shrink-0">0</span>
+            <span class="text-slate-600 font-medium">Answered</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="count-not-answered" class="w-6 h-6 rounded-md bg-red-600 text-white font-bold flex items-center justify-center shrink-0">0</span>
+            <span class="text-slate-600 font-medium">Not Answered</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="count-not-visited" class="w-6 h-6 rounded-md bg-slate-100 border border-slate-300 text-slate-700 font-bold flex items-center justify-center shrink-0">120</span>
+            <span class="text-slate-600 font-medium">Not Visited</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="count-marked" class="w-6 h-6 rounded-md bg-purple-600 text-white font-bold flex items-center justify-center shrink-0">0</span>
+            <span class="text-slate-600 font-medium">Marked</span>
+          </div>
+          <div class="col-span-2 flex items-center gap-2 pt-1 border-t border-slate-100">
+            <span id="count-answered-marked" class="relative w-6 h-6 rounded-md bg-purple-600 text-white font-bold flex items-center justify-center shrink-0">
+              0
+              <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border border-white"></span>
+            </span>
+            <span class="text-slate-600 font-medium">Answered &amp; Marked for Review</span>
+          </div>
+        </div>
+
+        <div id="palette-grid" class="flex-1 overflow-y-auto p-3.5 grid grid-cols-5 gap-2 content-start custom-scroll"></div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- ==================== SCREEN 4: SCORECARD & SCORE MANAGEMENT ==================== -->
+  <div id="screen-scorecard" class="hidden flex-1 flex flex-col">
+    <header class="bg-nlu-900 text-white border-b-4 border-amber-400 shadow-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center shrink-0">
+            <svg class="w-6 h-6 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight">CLAT MOCK-1 — Official Scorecard</h1>
+            <p class="text-xs sm:text-sm text-slate-200">Evaluated Result &amp; Real-Time Firebase Score Management</p>
+          </div>
+        </div>
+
+        <button id="btn-new-attempt" type="button" class="px-4 py-2.5 rounded-xl bg-white text-nlu-900 hover:bg-amber-50 font-bold text-sm shadow-sm transition cursor-pointer">
+          + Register New Candidate
+        </button>
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-6 flex flex-col md:flex-row items-center justify-between gap-6 border-b border-slate-200">
+          <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
+            <img id="res-candidate-photo" src="https://placehold.co/180x180/1e3a8a/ffffff?text=USER" alt="Candidate photo" class="w-20 h-20 rounded-2xl object-cover border-2 border-blue-200 shadow-sm shrink-0" />
+            <div>
+              <span class="inline-block px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold mb-1">Exam Submitted &amp; Synced</span>
+              <h2 id="res-candidate-name" class="text-xl font-extrabold text-nlu-900">Candidate Name</h2>
+              <p id="res-candidate-contact" class="text-xs sm:text-sm text-slate-500 mt-0.5">Mobile &bull; Email</p>
+              <p id="res-meta-time" class="text-xs text-slate-400 mt-1">Completed on - &bull; Time Taken: -</p>
+            </div>
+          </div>
+
+          <div class="bg-nlu-900 text-white rounded-2xl px-7 py-4 text-center min-w-[210px] shadow-md">
+            <p class="text-xs font-semibold uppercase tracking-wider text-amber-300">Final CLAT Score</p>
+            <div class="mt-1 flex items-baseline justify-center gap-1">
+              <span id="res-total-score" class="text-4xl font-extrabold tracking-tight">0.00</span>
+              <span class="text-base font-semibold text-slate-300">/ 120</span>
+            </div>
+            <p class="text-[11px] text-slate-300 mt-1">Marking: +1 Correct | -0.25 Wrong</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 divide-x divide-slate-200 bg-slate-50/70">
+          <div class="p-4 sm:p-5 text-center">
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Correct (+1)</p>
+            <p id="res-correct" class="text-2xl font-extrabold text-emerald-600 mt-1">0</p>
+          </div>
+          <div class="p-4 sm:p-5 text-center">
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Incorrect (-0.25)</p>
+            <p id="res-wrong" class="text-2xl font-extrabold text-red-600 mt-1">0</p>
+            <p id="res-negative-deduction" class="text-[11px] text-red-500 font-medium">-0.00 marks</p>
+          </div>
+          <div class="p-4 sm:p-5 text-center">
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Unattempted (0)</p>
+            <p id="res-unattempted" class="text-2xl font-extrabold text-slate-700 mt-1">120</p>
+          </div>
+          <div class="p-4 sm:p-5 text-center">
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Accuracy</p>
+            <p id="res-accuracy" class="text-2xl font-extrabold text-nlu-700 mt-1">0%</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="bg-slate-50 border-b border-slate-200 px-6 py-4">
+          <h3 class="text-base font-bold text-nlu-900">Section-Wise Performance Analysis</h3>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
+              <tr>
+                <th class="px-5 py-3">Section</th>
+                <th class="px-4 py-3 text-center">Total Qs</th>
+                <th class="px-4 py-3 text-center">Attempted</th>
+                <th class="px-4 py-3 text-center text-emerald-700">Correct</th>
+                <th class="px-4 py-3 text-center text-red-600">Wrong</th>
+                <th class="px-4 py-3 text-center">Accuracy</th>
+                <th class="px-5 py-3 text-right">Section Score</th>
+              </tr>
+            </thead>
+            <tbody id="res-section-table-body" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h3 class="text-base font-bold text-nlu-900 flex items-center gap-2">
+              Firebase Live Leaderboard &amp; Score Management
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Live Sync
+              </span>
+            </h3>
+            <p class="text-xs text-slate-500">All CLAT MOCK-1 candidates, captured photos, statuses, and scores</p>
+          </div>
+          <button id="btn-export-csv-inline" type="button" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-nlu-900 hover:bg-nlu-800 text-white font-semibold text-xs sm:text-sm shadow-sm transition cursor-pointer">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export CSV
+          </button>
+        </div>
+
+        <div class="px-6 py-3.5 border-b border-slate-200 flex flex-wrap items-center gap-3 bg-white">
+          <input id="inline-scoreboard-search" type="text" placeholder="Search by candidate name, mobile, or email..." class="flex-1 min-w-[220px] px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-nlu-700" />
+          <select id="inline-scoreboard-filter" class="px-3.5 py-2 rounded-xl border border-slate-300 text-sm bg-white font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-nlu-700">
+            <option value="all">All Statuses</option>
+            <option value="completed">Completed</option>
+            <option value="in_progress">In Progress</option>
+            <option value="registered">Registered</option>
+          </select>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
+              <tr>
+                <th class="px-4 py-3 text-center">Rank</th>
+                <th class="px-4 py-3">Candidate</th>
+                <th class="px-4 py-3">Contact Details</th>
+                <th class="px-4 py-3 text-center">Status</th>
+                <th class="px-4 py-3 text-center">Score (/120)</th>
+                <th class="px-4 py-3 text-center">Accuracy</th>
+                <th class="px-4 py-3 text-right">Time Taken</th>
+              </tr>
+            </thead>
+            <tbody id="inline-scoreboard-tbody" class="divide-y divide-slate-100">
+              <tr>
+                <td colspan="7" class="px-6 py-8 text-center text-slate-400">Loading real-time records...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ==================== MODAL 1: REAL-TIME SCOREBOARD ==================== -->
+  <div id="modal-scoreboard" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/65 modal-backdrop">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col overflow-hidden">
+      <div class="bg-nlu-900 text-white px-5 sm:px-6 py-4 flex items-center justify-between gap-3 shrink-0">
+        <div>
+          <h2 class="text-base sm:text-lg font-extrabold flex items-center gap-2">
+            CLAT MOCK-1 — Firebase Scoreboard
+            <span class="px-2 py-0.5 rounded-full bg-emerald-400/20 border border-emerald-300/30 text-emerald-300 text-[11px] font-semibold">Real-Time</span>
+          </h2>
+          <p class="text-xs text-slate-300 mt-0.5">Live candidate registrations, captured verification photos, and evaluated scores</p>
+        </div>
+        <button id="btn-close-scoreboard" type="button" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition cursor-pointer" aria-label="Close scoreboard">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="px-5 sm:px-6 py-3.5 border-b border-slate-200 bg-slate-50 flex flex-wrap items-center gap-3 shrink-0">
+        <input id="modal-scoreboard-search" type="text" placeholder="Search name, mobile, or email..." class="flex-1 min-w-[200px] px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-nlu-700" />
+        <select id="modal-scoreboard-filter" class="px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-nlu-700">
+          <option value="all">All Statuses</option>
+          <option value="completed">Completed</option>
+          <option value="in_progress">In Progress</option>
+          <option value="registered">Registered</option>
+        </select>
+        <button id="btn-export-csv-modal" type="button" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-nlu-900 hover:bg-nlu-800 text-white text-xs sm:text-sm font-semibold shadow-sm transition cursor-pointer">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Export CSV
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-auto custom-scroll">
+        <table class="w-full text-left text-xs sm:text-sm">
+          <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200 sticky top-0 z-10">
+            <tr>
+              <th class="px-4 py-3 text-center">Rank</th>
+              <th class="px-4 py-3">Candidate</th>
+              <th class="px-4 py-3">Contact Details</th>
+              <th class="px-4 py-3 text-center">Status</th>
+              <th class="px-4 py-3 text-center">Score (/120)</th>
+              <th class="px-4 py-3 text-center">Accuracy</th>
+              <th class="px-4 py-3 text-right">Time</th>
+            </tr>
+          </thead>
+          <tbody id="modal-scoreboard-tbody" class="divide-y divide-slate-100">
+            <tr>
+              <td colspan="7" class="px-6 py-10 text-center text-slate-400">Connecting to Firebase Scoreboard...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 2: SUBMIT CONFIRMATION ==================== -->
+  <div id="modal-submit-confirm" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/65 modal-backdrop">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-md overflow-hidden">
+      <div class="bg-nlu-900 text-white px-6 py-4">
+        <h3 class="text-base sm:text-lg font-extrabold">Confirm Exam Submission</h3>
+        <p class="text-xs text-slate-300 mt-0.5">Review your CLAT MOCK-1 attempt summary before final submission</p>
+      </div>
+      <div class="p-6 space-y-4">
+        <div class="grid grid-cols-2 gap-3 text-center text-xs">
+          <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200">
+            <p class="text-emerald-700 font-semibold">Answered</p>
+            <p id="submit-summary-answered" class="text-2xl font-extrabold text-emerald-700 mt-0.5">0</p>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+            <p class="text-slate-600 font-semibold">Unanswered</p>
+            <p id="submit-summary-unanswered" class="text-2xl font-extrabold text-slate-800 mt-0.5">120</p>
+          </div>
+          <div class="p-3 rounded-xl bg-purple-50 border border-purple-200">
+            <p class="text-purple-700 font-semibold">Marked for Review</p>
+            <p id="submit-summary-marked" class="text-2xl font-extrabold text-purple-700 mt-0.5">0</p>
+          </div>
+          <div class="p-3 rounded-xl bg-amber-50 border border-amber-200">
+            <p class="text-amber-800 font-semibold">Time Remaining</p>
+            <p id="submit-summary-time" class="text-2xl font-extrabold font-mono text-amber-800 mt-0.5">120:00</p>
+          </div>
+        </div>
+        <p class="text-xs text-slate-600 leading-relaxed">
+          Once submitted, you cannot modify your responses. Your score (+1 / -0.25) will be calculated and saved immediately to the Firebase Scoreboard.
+        </p>
+      </div>
+      <div class="bg-slate-50 border-t border-slate-200 px-6 py-4 flex items-center justify-end gap-3">
+        <button id="btn-cancel-submit" type="button" class="px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 font-semibold text-sm transition cursor-pointer">
+          Return to Exam
+        </button>
+        <button id="btn-confirm-submit" type="button" class="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-sm transition cursor-pointer">
+          Yes, Submit Exam
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Modular JavaScript Entry Point -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
