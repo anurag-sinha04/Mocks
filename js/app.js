@@ -151,7 +151,7 @@ async function initFirebase() {
     const cred = await signInAnonymously(auth);
     currentUser = cred.user;
     firebaseReady = true;
-    updateFirebaseStatusUI('connected', 'Firebase Synced');
+    updateFirebaseStatusUI('connected', 'Synced');
     subscribeToScoreboard();
   } catch (err) {
     console.error('Firebase init error:', err);
