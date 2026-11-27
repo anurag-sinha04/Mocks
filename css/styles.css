@@ -1,83 +1,77 @@
 /* ==========================================================================
-   CLAT MOCK-1 — Custom Stylesheet
-   Stored at: clat-mock-1/css/styles.css
+   CLAT MOCK-1 — Custom Stylesheet  (css/styles.css)
    ========================================================================== */
-
 :root {
   --nlu-950: #091a33;
   --nlu-900: #0f294d;
   --nlu-800: #16396b;
   --nlu-700: #1e3a8a;
-  --nlu-accent: #fbbf24;
   --scroll-track: #f1f5f9;
   --scroll-thumb: #cbd5e1;
   --scroll-thumb-hover: #94a3b8;
 }
 
-/* Base typography & smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
 
-body {
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-}
+.camera-mirrored { transform: scaleX(-1); }
+.modal-backdrop { backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
 
-/* Mirror live webcam preview so candidate alignment feels natural */
-.camera-mirrored {
-  transform: scaleX(-1);
-}
+.custom-scroll::-webkit-scrollbar { width: 7px; height: 7px; }
+.custom-scroll::-webkit-scrollbar-track { background: var(--scroll-track); }
+.custom-scroll::-webkit-scrollbar-thumb { background-color: var(--scroll-thumb); border-radius: 9999px; }
+.custom-scroll::-webkit-scrollbar-thumb:hover { background-color: var(--scroll-thumb-hover); }
+.custom-scroll { scrollbar-width: thin; scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
 
-/* Modal backdrop blur */
-.modal-backdrop {
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-}
+@keyframes toastSlideIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+.toast-enter { animation: toastSlideIn 0.2s ease-out forwards; }
 
-/* Clean custom scrollbars for CBT Passage, Question, and Palette panes */
-.custom-scroll::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
-}
+.option-btn:focus-visible, .palette-q-btn:focus-visible { outline: 2px solid var(--nlu-700); outline-offset: 2px; }
 
-.custom-scroll::-webkit-scrollbar-track {
-  background: var(--scroll-track);
+/* ---------- Exam screen: no accidental selection / copying ---------- */
+#screen-exam, #guard-overlay {
+  -webkit-user-select: none; user-select: none;
 }
+#screen-exam .passage-text {
+  -webkit-user-select: text; user-select: text;
+  font-family: Georgia, 'Times New Roman', serif;
+  text-align: justify;
+}
+#screen-exam .src-line { font-style: italic; color: #64748b; font-size: .8em; margin-top: .5rem; text-align: left; }
+#screen-exam.pen-on .passage-text { cursor: crosshair; }
+#screen-exam.pen-erase .passage-text .ann { cursor: pointer; outline: 1px dashed #ef4444; }
 
-.custom-scroll::-webkit-scrollbar-thumb {
-  background-color: var(--scroll-thumb);
-  border-radius: 9999px;
+/* ---------- Booklet (full paper) view ---------- */
+.bk-page {
+  background: #fff; border: 1px solid #cbd5e1; box-shadow: 0 2px 10px rgba(15, 41, 77, .12);
+  padding: 28px 38px; font-family: Georgia, 'Times New Roman', serif; color: #111827; border-radius: 4px;
 }
+.bk-pno { font-weight: 700; font-size: 1.05rem; margin-bottom: .35rem; }
+.bk-passage { padding-bottom: 14px; border-bottom: 1px solid #e2e8f0; margin-bottom: 14px; line-height: 1.7; }
+.bk-passage p { margin-bottom: .7rem; }
+.bk-q { padding: 10px 12px; margin: 6px -12px; border-radius: 8px; }
+.bk-q.bk-current { background: #f0f5fc; outline: 2px solid #1e3a8a; }
+.bk-qtext { font-weight: 600; margin-bottom: 8px; line-height: 1.55; }
+.bk-opts { display: grid; gap: 6px; }
+.bk-opt {
+  display: flex; gap: 10px; align-items: flex-start; text-align: left; width: 100%;
+  padding: 8px 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; background: #fff; cursor: pointer;
+  font-family: inherit; font-size: .93rem; line-height: 1.5; transition: background .12s, border-color .12s;
+}
+.bk-opt:hover { background: #f8fafc; border-color: #94a3b8; }
+.bk-opt-sel { border-color: #1e3a8a; background: #eff6ff; }
+.bk-letter {
+  flex: none; width: 24px; height: 24px; border-radius: 6px; background: #f1f5f9; border: 1px solid #cbd5e1;
+  display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: .75rem;
+  font-family: Inter, sans-serif;
+}
+.bk-opt-sel .bk-letter { background: #0f294d; color: #fff; border-color: #0f294d; }
+.bk-actions { display: flex; gap: 8px; margin-top: 8px; font-family: Inter, sans-serif; }
+.bk-actions button {
+  font-size: .72rem; font-weight: 600; padding: 4px 10px; border-radius: 8px;
+  border: 1px solid #cbd5e1; background: #fff; cursor: pointer; color: #334155;
+}
+.bk-actions button:hover { background: #f1f5f9; }
 
-.custom-scroll::-webkit-scrollbar-thumb:hover {
-  background-color: var(--scroll-thumb-hover);
-}
-
-/* Firefox scrollbar fallback */
-.custom-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: var(--scroll-thumb) var(--scroll-track);
-}
-
-/* Subtle entry animation for toast alerts */
-@keyframes toastSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.toast-enter {
-  animation: toastSlideIn 0.2s ease-out forwards;
-}
-
-/* Highlight active option nicely */
-.option-btn:focus-visible,
-.palette-q-btn:focus-visible {
-  outline: 2px solid var(--nlu-700);
-  outline-offset: 2px;
-}
+.pen-btn-active { background: #0f294d !important; color: #fff !important; border-color: #0f294d !important; }
+.pen-dot-active { outline: 2px solid #0f294d; outline-offset: 2px; }
